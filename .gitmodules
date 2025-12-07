@@ -1,0 +1,3 @@
+[submodule "include/Steamworks-SDK"]
+	path = include/Steamworks-SDK
+	url = https://github.com/ExperimentFailed/Steamworks-SDK.git
