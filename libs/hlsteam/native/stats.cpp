@@ -123,7 +123,8 @@ void CallbackHandler::OnGlobalStatsReceived(GlobalStatsReceived_t* pResult, bool
 
 HL_PRIM bool HL_NAME(request_stats)(){
 	if (!CheckInit()) return false;
-	return SteamUserStats()->RequestCurrentStats();
+	return false;
+	//return SteamUserStats()->RequestCurrentStats();
 }
 DEFINE_PRIM(_BOOL, request_stats, _NO_ARG);
 
