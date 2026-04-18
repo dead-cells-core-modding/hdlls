@@ -1,4 +1,4 @@
-﻿
+
 get_filename_component(INCLUDES_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../include" ABSOLUTE)
 
 function(set_as_hdll target)
@@ -10,7 +10,7 @@ function(set_as_hdll target)
     )
 endfunction()
 
-add_subdirectory(directx)
+#add_subdirectory(directx)
 add_subdirectory(fmt)
 add_subdirectory(openal)
 add_subdirectory(sdl)
