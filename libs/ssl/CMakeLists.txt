@@ -1,4 +1,4 @@
-if(WIN32)
+
     add_library(ssl.hdll SHARED
         ${INCLUDES_BASE_DIR}/mbedtls/library/aes.c
         ${INCLUDES_BASE_DIR}/mbedtls/library/aesni.c
@@ -80,14 +80,16 @@ if(WIN32)
         ${INCLUDES_BASE_DIR}/mbedtls/include
     )
 
+    if(WIN32)
     target_link_libraries(ssl.hdll
         libhl
         crypt32
     )
+    endif()
 
     install(
         TARGETS
             ssl.hdll
         DESTINATION ${HDLL_DESTINATION}
     )
-endif()
+

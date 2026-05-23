@@ -116,6 +116,7 @@ if(WIN32)
         dxt.c
     )
 else()
+    find_package(PkgConfig)
     find_package(ZLIB REQUIRED)
     find_package(PNG REQUIRED)
 

@@ -7,6 +7,9 @@ function(set_as_hdll target)
         PREFIX ""
         OUTPUT_NAME ${target}
         SUFFIX .hdll
+        RUNTIME_OUTPUT_DIRECTORY ${DCCM_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${DCCM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY ${DCCM_OUTPUT_DIR}
     )
 endfunction()
 
@@ -18,6 +21,10 @@ add_subdirectory(sqlite)
 add_subdirectory(ssl)
 add_subdirectory(ui)
 add_subdirectory(uv)
-add_subdirectory(hldiscord)
 add_subdirectory(hlsteam)
+
+
+if(WIN32)
 add_subdirectory(hlchroma)
+add_subdirectory(hldiscord)
+endif()
