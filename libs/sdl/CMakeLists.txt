@@ -1,4 +1,4 @@
-﻿
+
 if(WIN32)
     set(SDL2_PATH ${HDLLS_INCLUDE}/sdl)
     set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
@@ -46,11 +46,18 @@ endif()
 
 if(WIN32)
 set(SDL2_LIBRARY_DLL ${SDL2_PATH}/lib/x64/SDL2.dll)
+set(SDL3_LIBRARY_DLL ${SDL2_PATH}/lib/x64/SDL3.dll)
 add_custom_command(
     TARGET sdl.hdll POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${SDL2_LIBRARY_DLL}
             ${OUTPUT_DIR}/SDL2.dll
+)
+add_custom_command(
+    TARGET sdl.hdll POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${SDL3_LIBRARY_DLL}
+            ${OUTPUT_DIR}/SDL3.dll
 )
 endif()
 
