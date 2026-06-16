@@ -18,6 +18,7 @@ target_include_directories(sdl.hdll
     PRIVATE
     ${SDL2_INCLUDE_DIR}
     ${INCLUDES_BASE_DIR}/gl
+    ${INCLUDES_BASE_DIR}
 )
 
 target_link_libraries(sdl.hdll
@@ -29,18 +30,6 @@ if(WIN32)
     target_link_libraries(sdl.hdll
         winmm
         opengl32
-    )
-endif()
-
-if(APPLE)
-    find_package(OPENGL REQUIRED)
-    target_include_directories(sdl.hdll
-        PRIVATE
-        ${OPENGL_INCLUDE_DIR}
-    )
-    target_link_libraries(sdl.hdll
-        libhl
-        ${OPENGL_gl_LIBRARY}
     )
 endif()
 
@@ -60,6 +49,23 @@ add_custom_command(
             ${OUTPUT_DIR}/SDL3.dll
 )
 endif()
+
+if(ANDROID)
+    target_link_libraries(sdl.hdll GLESv3)
+endif()
+
+if((APPLE OR UNIX) AND NOT ANDROID)
+    find_package(OpenGL REQUIRED)
+    target_include_directories(sdl.hdll
+        PRIVATE
+        ${OPENGL_INCLUDE_DIR}
+    )
+    target_link_libraries(sdl.hdll
+        libhl
+        ${OPENGL_gl_LIBRARY}
+    )
+endif()
+
 
 install(
     TARGETS sdl.hdll
