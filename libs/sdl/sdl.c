@@ -113,6 +113,11 @@ HL_PRIM bool HL_NAME(init_once)() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -371,7 +376,14 @@ HL_PRIM void HL_NAME(message_box)(vbyte *title, vbyte *text, bool error) {
 
 
 HL_PRIM void HL_NAME(set_vsync)(bool v) {
-	SDL_GL_SetSwapInterval(v ? 1 : 0);
+	if (v) {
+		if (SDL_GL_SetSwapInterval(-1)) {
+			SDL_GL_SetSwapInterval(1);
+		}
+	}
+	else {
+		SDL_GL_SetSwapInterval(0);
+	}
 }
 
 HL_PRIM bool HL_NAME(detect_win32)() {
@@ -447,7 +459,20 @@ HL_PRIM SDL_Window *HL_NAME(win_create)(int width, int height) {
 }
 
 HL_PRIM SDL_GLContext HL_NAME(win_get_glcontext)(SDL_Window *win) {
-	return SDL_GL_CreateContext(win);
+	SDL_GLContext ctx = SDL_GL_CreateContext(win);
+#	ifdef _WIN32
+	if (ctx == NULL) {
+		fprintf_s(stderr, "[DCCMDBG] GL context creation failed: %s\n", SDL_GetError());
+	} else {
+		int r = 0, g = 0, b = 0, a = 0;
+		SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &r);
+		SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &g);
+		SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &b);
+		SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &a);
+		fprintf_s(stderr, "[DCCMDBG] GL context created OK. RGBA=%d/%d/%d/%d\n", r, g, b, a);
+	}
+#	endif
+	return ctx;
 }
 
 HL_PRIM bool HL_NAME(win_set_fullscreen)(SDL_Window *win, int mode) {
