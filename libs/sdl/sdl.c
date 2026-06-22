@@ -587,30 +587,9 @@ HL_PRIM bool HL_NAME(win_set_fullscreen)(SDL_Window *win, int mode) {
 	case 0: // WINDOWED
 		return SDL_SetWindowFullscreen(win, 0) == 0;
 	case 1: // FULLSCREEN
-		return SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN) == 0;
-	case 2: // BORDERLESS
-#		ifdef _WIN32
-		{
-			HMONITOR hmon = MonitorFromWindow(wnd,MONITOR_DEFAULTTONEAREST);
-			MONITORINFO mi = { sizeof(mi) };
-			RECT r;
-			if( !GetMonitorInfo(hmon, &mi) )
-				return false;
-			GetWindowRect(wnd,&r);
-			save = (wsave_pos*)malloc(sizeof(wsave_pos));
-			save->x = r.left;
-			save->y = r.top;
-			save->w = r.right - r.left;
-			save->h = r.bottom - r.top;
-			save->style = GetWindowLong(wnd,GWL_STYLE);
-			SDL_SetWindowData(win,"save",save);
-			SetWindowLong(wnd,GWL_STYLE, WS_POPUP | WS_VISIBLE);
-			SetWindowPos(wnd,NULL,mi.rcMonitor.left,mi.rcMonitor.top,mi.rcMonitor.right - mi.rcMonitor.left,mi.rcMonitor.bottom - mi.rcMonitor.top + 2 /* prevent opengl driver to use exclusive mode !*/,0);
-			return true;
-		}
-#	else
 		return SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP) == 0;
-#	endif
+	case 2: // BORDERLESS
+		return SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP) == 0;
 	}
 	return false;
 }
