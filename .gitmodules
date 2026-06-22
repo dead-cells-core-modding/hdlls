@@ -1,3 +1,6 @@
 [submodule "include/Steamworks-SDK"]
 	path = include/Steamworks-SDK
 	url = git@github.com:rlabrecque/SteamworksSDK.git
+[submodule "include/cl-gog-galaxy"]
+	path = include/cl-gog-galaxy
+	url = https://codeberg.org/shinmera/cl-gog-galaxy.git

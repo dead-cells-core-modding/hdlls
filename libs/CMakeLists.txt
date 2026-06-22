@@ -22,6 +22,7 @@ add_subdirectory(ssl)
 add_subdirectory(ui)
 add_subdirectory(uv)
 add_subdirectory(hlsteam)
+add_subdirectory(hlgog)
 
 
 if(WIN32)
