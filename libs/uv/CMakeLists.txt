@@ -38,7 +38,13 @@ if(WIN32)
             ${INCLUDES_BASE_DIR}/libuv/src/win/winsock.c
     )
 else()
-    find_package(LibUV)
+    # libuv1-dev does not ship CMake config files; find the library and headers directly
+    find_library(LibUV_LIBRARIES NAMES uv libuv)
+    find_path(LibUV_INCLUDE_DIRS NAMES uv.h)
+    if(NOT LibUV_LIBRARIES OR NOT LibUV_INCLUDE_DIRS)
+        message(FATAL_ERROR "libuv not found — install libuv1-dev (libuv.so + uv.h)")
+    endif()
+    set(LibUV_FOUND TRUE)
 endif()
 
 set_as_hdll(uv)
@@ -65,9 +71,8 @@ else()
         PRIVATE
         ${LibUV_INCLUDE_DIRS}
     )
-    target_link_libraries(uv.hdll
-        ${LibUV_LIBRARIES}
-    )
+    # Link libuv (--no-as-needed) and copy libuv.so alongside uv.hdll
+    hdll_copy_dependency(uv uv)
 endif()
 
 install(

@@ -6,6 +6,8 @@ if(WIN32)
     find_library(SDL2_LIBRARY SDL2 PATHS ${SDL2_PATH}/lib/x64)
 endif()
 
+find_package(SDL2 REQUIRED)
+
 add_library(sdl.hdll SHARED
     sdl.c
     gl.c
@@ -21,16 +23,26 @@ target_include_directories(sdl.hdll
     ${INCLUDES_BASE_DIR}
 )
 
-target_link_libraries(sdl.hdll
-    libhl
-    ${SDL2_LIBRARY}
-)
-
 if(WIN32)
     target_link_libraries(sdl.hdll
+        libhl
+        ${SDL2_LIBRARY}
         winmm
         opengl32
     )
+elseif(ANDROID)
+    target_link_libraries(sdl.hdll
+        libhl
+        ${SDL2_LIBRARY}
+        GLESv3
+    )
+else()
+    target_link_libraries(sdl.hdll libhl)
+    hdll_copy_dependency(sdl SDL2)
+
+    find_package(OpenGL REQUIRED)
+    target_include_directories(sdl.hdll PRIVATE ${OPENGL_INCLUDE_DIR})
+    hdll_copy_dependency(sdl GL)
 endif()
 
 if(WIN32)
@@ -48,22 +60,6 @@ add_custom_command(
             ${SDL3_LIBRARY_DLL}
             ${OUTPUT_DIR}/SDL3.dll
 )
-endif()
-
-if(ANDROID)
-    target_link_libraries(sdl.hdll GLESv3)
-endif()
-
-if((APPLE OR UNIX) AND NOT ANDROID)
-    find_package(OpenGL REQUIRED)
-    target_include_directories(sdl.hdll
-        PRIVATE
-        ${OPENGL_INCLUDE_DIR}
-    )
-    target_link_libraries(sdl.hdll
-        libhl
-        ${OPENGL_gl_LIBRARY}
-    )
 endif()
 
 

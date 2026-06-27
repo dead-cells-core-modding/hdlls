@@ -20,18 +20,22 @@
         ${HDLLS_INCLUDE}/openal/include
     )
 
+    if(WIN32)
     target_link_libraries(openal.hdll
         libhl
         ${OpenAL_LIBRARY}
     )
-
-    if(WIN32)
     add_custom_command(
     TARGET openal.hdll POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
             ${OpenAL_LIBRARY_DLL}
             ${OUTPUT_DIR}/OpenAL32.dll
     )
+    else()
+    target_link_libraries(openal.hdll
+        libhl
+    )
+    hdll_copy_dependency(openal openal)
     endif()
 
     install(

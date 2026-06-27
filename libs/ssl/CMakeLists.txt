@@ -80,9 +80,11 @@
         ${INCLUDES_BASE_DIR}/mbedtls/include
     )
 
-    if(WIN32)
     target_link_libraries(ssl.hdll
         libhl
+    )
+    if(WIN32)
+    target_link_libraries(ssl.hdll
         crypt32
     )
     endif()

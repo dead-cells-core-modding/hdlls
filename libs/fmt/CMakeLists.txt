@@ -157,6 +157,28 @@ target_link_libraries(fmt.hdll
     ${OGGVORBIS_LIBRARIES}
 )
 
+if(UNIX)
+    # Copy system .so dependencies alongside fmt.hdll and set RPATH
+    foreach(lib_name z png jpeg vorbis vorbisenc vorbisfile)
+        find_library(FMT_DEP_${lib_name} ${lib_name})
+        if(FMT_DEP_${lib_name})
+            get_filename_component(_dep_name ${FMT_DEP_${lib_name}} NAME)
+            add_custom_command(TARGET fmt.hdll POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    ${FMT_DEP_${lib_name}}
+                    "${DCCM_OUTPUT_DIR}/${_dep_name}"
+                COMMENT "Copying ${_dep_name} → ${DCCM_OUTPUT_DIR}"
+            )
+        endif()
+    endforeach()
+
+    set_target_properties(fmt.hdll PROPERTIES
+        INSTALL_RPATH "$ORIGIN"
+        BUILD_RPATH "$ORIGIN"
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+    )
+endif()
+
 target_compile_definitions(fmt.hdll
     PRIVATE
     ${PNG_DEFINITIONS}
