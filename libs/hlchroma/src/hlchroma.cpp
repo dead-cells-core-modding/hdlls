@@ -1,15 +1,18 @@
 #define HL_NAME(n) chroma_##n
-#include <Windows.h>
+
+#include <hlsystem.h>
 #include <hl.h>
+
+
+#ifdef _WIN64
 #include <chroma/RzChromaSDKTypes.h>
 #include <chroma/RzErrors.h>
 #include <tchar.h>
+#endif
 
 #ifdef _WIN64
+
 #	define CHROMA_LIBRARY_NAME _T("RzChromaSDK64.dll")
-#else
-#	define CHROMA_LIBRARY_NAME _T("RzChromaSDK.dll")
-#endif
 
 using namespace ChromaSDK;
 
@@ -39,6 +42,7 @@ DeleteEffectFunction			deleteEffect			= NULL;
 
 
 static HMODULE dllHandle = NULL;
+
 
 HL_PRIM bool HL_NAME(init)(){
 	if (dllHandle){
@@ -112,6 +116,7 @@ HL_PRIM void HL_NAME(setLinkedEffect)(void* params) {
 }
 
 HL_PRIM void HL_NAME(release)(){
+	#ifdef _WIN64
 	if (dllHandle) {
 		ReleaseFunction release = (ReleaseFunction)GetProcAddress(dllHandle, "UnInit");
 		if(release){
@@ -120,7 +125,47 @@ HL_PRIM void HL_NAME(release)(){
 		FreeLibrary(dllHandle);
 		dllHandle = NULL;
 	}
+	#endif
 }
+
+#else
+HL_PRIM bool HL_NAME(init)(){
+
+	return false;
+}
+
+HL_PRIM void HL_NAME(setMouseEffect)(void* params){
+
+}
+
+HL_PRIM void HL_NAME(setKeyboardEffect)(void* params) {
+
+}
+
+HL_PRIM void HL_NAME(setMousepadEffect)(void* params) {
+
+}
+
+HL_PRIM void HL_NAME(setKeypadEffect)(void* params) {
+
+}
+
+HL_PRIM void HL_NAME(setHeadsetEffect)(void* params) {
+
+}
+
+HL_PRIM void HL_NAME(setKeyboardKeysEffect)(void* params) {
+
+}
+HL_PRIM void HL_NAME(setLinkedEffect)(void* params) {
+
+}
+
+HL_PRIM void HL_NAME(release)(){
+
+}
+#endif
+
 DEFINE_PRIM(_VOID, init, _NO_ARG)
 DEFINE_PRIM(_VOID, setMouseEffect, _BYTES)
 DEFINE_PRIM(_VOID, setKeyboardEffect, _BYTES)

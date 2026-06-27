@@ -24,4 +24,10 @@
             discord.hdll
         DESTINATION ${HDLL_DESTINATION}
     )
+else()
+    add_library(discord.hdll SHARED src/hldiscord.cpp)
+    set_as_hdll(discord)
+    target_link_libraries(discord.hdll
+        libhl
+    )
 endif()
