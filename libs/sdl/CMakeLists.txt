@@ -4,9 +4,11 @@ if(WIN32)
     set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
 
     find_library(SDL2_LIBRARY SDL2 PATHS ${SDL2_PATH}/lib/x64)
+else()
+    find_package(SDL2 REQUIRED)
 endif()
 
-find_package(SDL2 REQUIRED)
+
 
 add_library(sdl.hdll SHARED
     sdl.c
