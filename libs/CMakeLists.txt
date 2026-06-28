@@ -29,6 +29,9 @@ function(hdll_copy_dependency target lib_identifier)
     endif()
 
     # Resolve the library to an absolute .so path
+    unset(DEP_LIB_PATH CACHE)
+    unset(DEP_LIB_NAME)
+    unset(DEP_LIB_NAME CACHE)
     find_library(DEP_LIB_PATH ${lib_identifier})
     if(NOT DEP_LIB_PATH)
         message(WARNING "hdll_copy_dependency: could not find ${lib_identifier}")
@@ -36,6 +39,9 @@ function(hdll_copy_dependency target lib_identifier)
     endif()
 
     get_filename_component(DEP_LIB_NAME ${DEP_LIB_PATH} NAME)
+    
+    
+    message(STATUS "hdll_copy_dependency(${target}): ${lib_identifier} ${DEP_LIB_NAME} → ${DCCM_OUTPUT_DIR}")
 
     # Copy the shared library beside the .hdll after build
     add_custom_command(TARGET ${target}.hdll POST_BUILD
@@ -57,39 +63,6 @@ function(hdll_copy_dependency target lib_identifier)
     )
 
     # RPATH: search the .hdll's own directory first
-    set_target_properties(${target}.hdll PROPERTIES
-        INSTALL_RPATH "$ORIGIN"
-        BUILD_RPATH "$ORIGIN"
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-    )
-endfunction()
-
-# Same as hdll_copy_dependency but takes an explicit library file path
-# instead of searching via find_library.
-function(hdll_copy_dependency_path target lib_path)
-    if(NOT UNIX OR NOT lib_path)
-        return()
-    endif()
-
-    get_filename_component(DEP_LIB_NAME ${lib_path} NAME)
-
-    add_custom_command(TARGET ${target}.hdll POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${lib_path}
-            "${DCCM_OUTPUT_DIR}/${DEP_LIB_NAME}"
-        COMMENT "Copying ${DEP_LIB_NAME} → ${DCCM_OUTPUT_DIR}"
-    )
-
-    target_link_options(${target}.hdll PRIVATE
-        LINKER:--no-as-needed
-    )
-    target_link_libraries(${target}.hdll
-        ${lib_path}
-    )
-    target_link_options(${target}.hdll PRIVATE
-        LINKER:--as-needed
-    )
-
     set_target_properties(${target}.hdll PROPERTIES
         INSTALL_RPATH "$ORIGIN"
         BUILD_RPATH "$ORIGIN"
