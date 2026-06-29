@@ -6,6 +6,8 @@ function(set_as_hdll target)
         PROPERTIES
         PREFIX ""
         OUTPUT_NAME ${target}
+        NO_SONAME TRUE
+        IMPORTED_NO_SONAME TRUE
         SUFFIX .hdll
         RUNTIME_OUTPUT_DIRECTORY ${DCCM_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY ${DCCM_OUTPUT_DIR}
@@ -38,12 +40,21 @@ function(hdll_copy_dependency target lib_identifier)
         return()
     endif()
 
-    get_filename_component(DEP_LIB_NAME ${DEP_LIB_PATH} NAME)
-    
-    
+    # Extract SONAME from the ELF (e.g. libuv.so.1); fall back to the filename
+    execute_process(
+        COMMAND objdump -p ${DEP_LIB_PATH}
+        OUTPUT_VARIABLE _OBJDUMP_OUT
+        ERROR_QUIET
+    )
+    if(_OBJDUMP_OUT MATCHES "SONAME +([^\n]+)")
+        string(STRIP "${CMAKE_MATCH_1}" DEP_LIB_NAME)
+    else()
+        get_filename_component(DEP_LIB_NAME ${DEP_LIB_PATH} NAME)
+    endif()
+
     message(STATUS "hdll_copy_dependency(${target}): ${lib_identifier} ${DEP_LIB_NAME} → ${DCCM_OUTPUT_DIR}")
 
-    # Copy the shared library beside the .hdll after build
+    # Copy the shared library beside the .hdll after build, using the soname
     add_custom_command(TARGET ${target}.hdll POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${DEP_LIB_PATH}
