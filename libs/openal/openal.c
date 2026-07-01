@@ -1,5 +1,7 @@
 #define HL_NAME(n) openal_##n
-#include <hl.h>
+
+#include <hl.h> 
+#undef _GUID
 
 #if defined(__APPLE__) && !defined(openal_soft)
 	#include <OpenAL/al.h>
