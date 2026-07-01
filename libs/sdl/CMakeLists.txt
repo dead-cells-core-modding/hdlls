@@ -1,11 +1,14 @@
 
 if(WIN32)
-    set(SDL2_PATH ${HDLLS_INCLUDE}/sdl)
-    set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
+    set(SDL3_PATH ${HDLLS_INCLUDE}/sdl)
+    set(SDL3_INCLUDE_DIR ${SDL3_PATH}/include)
 
-    find_library(SDL2_LIBRARY SDL2 PATHS ${SDL2_PATH}/lib/x64)
+    set(SDL3_DIR ${SDL3_PATH}/cmake)
+
+    find_package(SDL3 REQUIRED)
+
 else()
-    find_package(SDL2 REQUIRED)
+    find_package(SDL3 REQUIRED)
 endif()
 
 
@@ -18,7 +21,7 @@ set_as_hdll(sdl)
 
 target_include_directories(sdl.hdll
     PRIVATE
-    ${SDL2_INCLUDE_DIR}
+    ${SDL3_INCLUDE_DIR}
     ${INCLUDES_BASE_DIR}/gl
     ${INCLUDES_BASE_DIR}
 )
@@ -26,19 +29,19 @@ target_include_directories(sdl.hdll
 if(WIN32)
     target_link_libraries(sdl.hdll
         libhl
-        ${SDL2_LIBRARY}
+        SDL3::SDL3
         winmm
         opengl32
     )
 elseif(ANDROID)
     target_link_libraries(sdl.hdll
         libhl
-        ${SDL2_LIBRARY}
+        SDL3::SDL3
         GLESv3
     )
 else()
-    target_link_libraries(sdl.hdll libhl SDL2)
-    hdll_copy_dependency(sdl SDL2)
+    target_link_libraries(sdl.hdll libhl SDL3::SDL3)
+    hdll_copy_dependency(sdl SDL3)
 
     find_package(OpenGL REQUIRED)
     target_include_directories(sdl.hdll PRIVATE ${OPENGL_INCLUDE_DIR})
@@ -46,14 +49,7 @@ else()
 endif()
 
 if(WIN32)
-set(SDL2_LIBRARY_DLL ${SDL2_PATH}/lib/x64/SDL2.dll)
-set(SDL3_LIBRARY_DLL ${SDL2_PATH}/lib/x64/SDL3.dll)
-add_custom_command(
-    TARGET sdl.hdll POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${SDL2_LIBRARY_DLL}
-            ${OUTPUT_DIR}/SDL2.dll
-)
+set(SDL3_LIBRARY_DLL ${SDL3_PATH}/lib/x64/SDL3.dll)
 add_custom_command(
     TARGET sdl.hdll POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
