@@ -160,6 +160,7 @@ target_link_libraries(fmt.hdll
 hdll_copy_dependency(fmt z)
 hdll_copy_dependency(fmt png)
 hdll_copy_dependency(fmt jpeg)
+hdll_copy_dependency(fmt ogg)
 hdll_copy_dependency(fmt vorbis)
 hdll_copy_dependency(fmt vorbisenc)
 hdll_copy_dependency(fmt vorbisfile)
