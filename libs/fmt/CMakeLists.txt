@@ -1,3 +1,12 @@
+set(MIKKTSPACE_INCLUDE_DIR ${INCLUDES_BASE_DIR}/mikktspace)
+
+set(FMT_COMMON 
+        mikkt.c
+        fmt.c
+        sha1.c
+        ${MIKKTSPACE_INCLUDE_DIR}/mikktspace.c
+)
+
 if(WIN32)
     set(ZLIB_INCLUDE_DIRS ${INCLUDES_BASE_DIR}/zlib)
     set(PNG_INCLUDE_DIRS ${INCLUDES_BASE_DIR}/png)
@@ -111,9 +120,8 @@ if(WIN32)
         ${INCLUDES_BASE_DIR}/vorbis/synthesis.c
         ${INCLUDES_BASE_DIR}/vorbis/vorbisfile.c
         ${INCLUDES_BASE_DIR}/vorbis/window.c
-        fmt.c
-        sha1.c
         dxt.c
+        ${FMT_COMMON}
     )
 else()
     find_package(PkgConfig)
@@ -131,12 +139,13 @@ else()
     endif()
 
     add_library(fmt.hdll SHARED
-        fmt.c
-        sha1.c
+        
+        ${FMT_COMMON}
     )
 endif()
 
 set(MINIMP3_INCLUDE_DIR ${INCLUDES_BASE_DIR}/minimp3)
+
 
 set_as_hdll(fmt)
 
@@ -147,6 +156,7 @@ target_include_directories(fmt.hdll
     ${TurboJPEG_INCLUDE_DIRS}
     ${VORBIS_INCLUDE_DIR}
     ${MINIMP3_INCLUDE_DIR}
+    ${MIKKTSPACE_INCLUDE_DIR}
 )
 
 target_link_libraries(fmt.hdll
