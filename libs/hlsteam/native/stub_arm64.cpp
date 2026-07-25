@@ -4,6 +4,8 @@
 #define HL_NAME(n) steam_##n
 #include <hl.h>
 
+#ifdef ENABLE_STEAM_STUB
+
 typedef vbyte *vuid;
 
 #define _UID     _BYTES
@@ -455,3 +457,4 @@ HL_PRIM vbyte *HL_NAME(get_entered_gamepad_text_input)()
 
 DEFINE_PRIM(_BOOL, init_controllers, _NO_ARG);
 DEFINE_PRIM(_BYTES, get_entered_gamepad_text_input, _NO_ARG);
+#endif

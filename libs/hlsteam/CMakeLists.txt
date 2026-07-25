@@ -2,7 +2,7 @@
     if(DCCM_ARCH_ARM64)
         # ARM64 stub — no Steam SDK available
         set(SOURCES ./native/stub_arm64.cpp)
-
+        add_definitions(-DENABLE_STEAM_STUB)
         add_library(steam.hdll SHARED ${SOURCES})
 
         set_as_hdll(steam)
